@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portofolio</title>
+
+<!-- ================================================================
+     FONT
+     ================================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,450&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ================================================================
+     TOKEN DESAIN — warna TIDAK diubah, sama seperti versi sebelumnya.
+     ================================================================ */
+  :root{
+    --bg:        #F1EFE7;
+    --bg-raised: #E8E5D9;
+    --ink:       #17181A;
+    --ink-soft:  #5B5D57;
+    --line:      #D6D2C2;
+    --accent:    #3E5A44;
+    --accent-2:  #9C6B3E;
+    --paper-shadow: rgba(23,24,26,0.08);
+
+    --serif: 'Fraunces', serif;
+    --sans:  'Inter', sans-serif;
+    --mono:  'JetBrains Mono', monospace;
+
+    --max-w: 1180px;
+    --pad: clamp(20px, 5vw, 64px);
+  }
+
+  /* --- Dark mode: nilai token dibalik, struktur desain tetap sama --- */
+  html[data-theme="dark"]{
+    --bg:        #17181A;
+    --bg-raised: #1F2123;
+    --ink:       #F1EFE7;
+    --ink-soft:  #A6A89C;
+    --line:      #33352F;
+    --accent:    #7DA687;
+    --accent-2:  #D9A567;
+    --paper-shadow: rgba(0,0,0,0.45);
+  }
+
+  body, .card, header, .modal-content, .filter-btn, .btn, .hero-social a{
+    transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  #top, #proyek, #kontak{ scroll-margin-top:90px; }
+
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+  img{ display:block; max-width:100%; }
+  button{ font:inherit; cursor:pointer; }
+  ::selection{ background:var(--accent); color:var(--bg); }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .wrap{ max-width:var(--max-w); margin:0 auto; padding-left:var(--pad); padding-right:var(--pad); }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent);
+  }
+
+  /* ================================================================
+     HEADER / NAVIGASI — logo + Home, Projects, Contact
+     ================================================================ */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; padding-top:18px; padding-bottom:18px; }
+  .nav-logo{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-size:1.1rem; font-weight:600; }
+  .nav-logo-mark{
+    width:34px; height:34px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-weight:600; font-size:1rem;
+    color:var(--ink);
+    overflow:hidden; position:relative;
+  }
+  .nav-logo-mark img{ width:100%; height:100%; object-fit:contain; }
+  .nav-logo-fallback{ display:none; align-items:center; justify-content:center; }
+  .nav-links{ display:flex; gap:32px; font-size:0.9rem; }
+  .nav-links a{ position:relative; padding-bottom:2px; }
+  .nav-links a::after{ content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px; background:var(--ink); transition:width .25s ease; }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-toggle{ display:none; background:none; border:none; font-family:var(--mono); font-size:0.85rem; color:var(--ink); }
+
+  .theme-toggle{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid var(--line); background:var(--bg-raised);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.95rem; color:var(--ink);
+    transition:transform .2s ease, background-color .25s ease, border-color .25s ease;
+  }
+  .theme-toggle:hover{ transform:translateY(-2px); }
+  .nav-right{ display:flex; align-items:center; gap:18px; }
+
+  @media (max-width:720px){
+    .nav-links{
+      position:fixed; inset:63px 0 auto 0; background:var(--bg);
+      flex-direction:column; gap:0; border-bottom:1px solid var(--line);
+      transform:translateY(-120%); transition:transform .3s ease;
+      padding:8px var(--pad) 20px;
+    }
+    .nav-links.open{ transform:translateY(0); }
+    .nav-links a{ padding:14px 0; border-bottom:1px solid var(--line); }
+    .nav-toggle{ display:block; }
+  }
+
+  /* ================================================================
+     HERO — foto bulat di tengah, judul, deskripsi, 3 tombol, sosial
+     ================================================================ */
+  .hero{
+    padding-top:clamp(56px,10vw,110px); padding-bottom:clamp(48px,8vw,90px);
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+  }
+  .hero-photo{
+    width:clamp(96px,14vw,132px); height:clamp(96px,14vw,132px);
+    border-radius:50%; overflow:hidden; position:relative;
+    background:var(--bg-raised); border:1px solid var(--line);
+    box-shadow:0 16px 34px -16px var(--paper-shadow);
+  }
+  .hero-photo img{ width:100%; height:100%; object-fit:cover; }
+  .photo-placeholder{
+    display:none; position:absolute; inset:0; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    font-family:var(--mono); font-size:0.55rem; color:var(--ink-soft); padding:8px; line-height:1.3;
+  }
+  .hero-name{
+    margin-top:26px; font-family:var(--serif); font-weight:450;
+    font-size:clamp(2rem,5.6vw,3.4rem); line-height:1.12; max-width:20ch;
+  }
+  .hero-name em{ font-style:italic; font-weight:450; color:var(--accent); }
+  .hero-desc{ margin-top:16px; font-size:clamp(1rem,2vw,1.1rem); color:var(--ink-soft); max-width:56ch; }
+  .hero-cta{ margin-top:30px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    font-family:var(--mono); font-size:0.8rem; letter-spacing:0.03em;
+    padding:13px 22px; border-radius:999px; border:1px solid var(--ink);
+    transition:background .2s ease, color .2s ease, transform .2s ease;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-solid{ background:var(--ink); color:var(--bg); }
+  .btn-solid:hover{ transform:translateY(-2px); }
+  .btn-line:hover{ background:var(--ink); color:var(--bg); transform:translateY(-2px); }
+  .btn-ghost{ border-color:transparent; background:var(--bg-raised); }
+  .btn-ghost:hover{ background:var(--line); transform:translateY(-2px); }
+
+  .hero-social{ margin-top:28px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .hero-social a{
+    font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft);
+    border:1px solid var(--line); border-radius:999px; padding:7px 14px;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  .hero-social a:hover{ color:var(--ink); border-color:var(--ink); }
+
+  /* ================================================================
+     SEKSI UMUM
+     ================================================================ */
+  section{ padding-top:clamp(56px,9vw,100px); padding-bottom:clamp(56px,9vw,100px); }
+  .section-head{ max-width:64ch; margin:0 auto 46px; text-align:center; }
+  .section-title{ font-family:var(--serif); font-size:clamp(1.8rem,4vw,2.5rem); font-weight:450; margin-top:10px; }
+  .section-sub{ margin-top:14px; color:var(--ink-soft); font-size:1rem; }
+
+  /* ================================================================
+     BEHIND THE CODE — 3 kartu: Journey / Tools / Deliver
+     ================================================================ */
+  .behind{ background:var(--bg-raised); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .cards3{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  .cards3 .card:nth-child(3){ grid-column:1 / -1; }
+  .card-split{ display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:4px; }
+  @media (max-width:700px){ .card-split{ grid-template-columns:1fr; } }
+
+  .bring-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:20px; position:relative; }
+  .bring-grid::before{
+    content:''; position:absolute; left:50%; top:6px; bottom:6px; width:1px;
+    background:var(--line);
+  }
+  .bring-text{ padding-right:40px; display:flex; flex-direction:column; gap:10px; }
+  .bring-quote{
+    font-family:var(--serif); font-size:3.2rem; line-height:0.5; color:var(--accent);
+    opacity:0.55; font-style:italic;
+  }
+  .bring-text p{
+  color:var(--ink-soft); font-size:0.94rem;
+  line-height:1.5;
+  }
+  .bring-services{ padding-left:40px; }
+  .bring-services li{
+    display:flex; align-items:baseline; gap:16px;
+    padding:15px 0; border-bottom:1px solid var(--line);
+    font-size:0.94rem; color:var(--ink-soft);
+  }
+  .bring-services li:first-child{ padding-top:0; }
+  .bring-services li:last-child{ border-bottom:none; }
+  .bring-services li::before{
+    content:'●';
+    font-size:0.8rem; color:var(--accent); flex-shrink:0;
+    transform:translateY(-1px);
+  }
+  @media (max-width:700px){
+    .bring-grid{ grid-template-columns:1fr; gap:22px; }
+    .bring-grid::before{ display:none; }
+    .bring-text{ padding-right:0; }
+    .bring-services{ padding-left:0; }
+  }
+  .card{
+    background:var(--bg); border:1px solid var(--line); border-radius:16px;
+    padding:30px 26px; display:flex; flex-direction:column; gap:14px;
+  }
+  .card h3{ font-family:var(--serif); font-size:1.25rem; font-weight:500; }
+  .card p{ color:var(--ink-soft); font-size:0.94rem; }
+  .tools-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tools-tags span{
+    font-family:var(--mono); font-size:0.75rem; padding:7px 12px;
+    border:1px solid var(--line); border-radius:999px; background:var(--bg-raised);
+  }
+  .deliver-list li{
+    display:flex; align-items:flex-start; gap:10px; font-size:0.92rem; color:var(--ink-soft);
+  }
+  .deliver-list li::before{
+    content:'✓'; color:var(--accent); font-family:var(--mono); font-weight:600; flex-shrink:0;
+  }
+
+  @media (max-width:900px){ .cards3{ grid-template-columns:1fr; } }
+
+  /* ================================================================
+     PROJECTS — tab filter + grid kartu proyek
+     ================================================================ */
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:40px; }
+  .filter-btn{
+    font-family:var(--mono); font-size:0.75rem; padding:9px 16px; border-radius:999px;
+    border:1px solid var(--line); background:transparent; color:var(--ink-soft);
+    transition:all .2s ease;
+  }
+  .filter-btn.active, .filter-btn:hover{ background:var(--ink); border-color:var(--ink); color:var(--bg); }
+
+  .projects-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+  .project-card{
+    border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    background:var(--bg-raised); display:flex; flex-direction:column;
+    cursor:pointer; position:relative;
+    transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease, border-color .3s ease;
+  }
+  .project-card:hover, .project-card:focus-visible{
+    transform:translateY(-8px) scale(1.015);
+    box-shadow:0 32px 54px -22px var(--paper-shadow);
+    border-color:var(--accent);
+  }
+  .project-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .project-thumb{ aspect-ratio:16/10; position:relative; background:var(--bg); border-bottom:1px solid var(--line); overflow:hidden; }
+  .project-thumb img{ width:100%; height:100%; object-fit:cover; transition:transform .5s cubic-bezier(.22,1,.36,1); }
+  .project-card:hover .project-thumb img{ transform:scale(1.07); }
+  .thumb-overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0); opacity:0;
+    transition:opacity .35s ease, background-color .35s ease;
+  }
+  .project-card:hover .thumb-overlay, .project-card:focus-visible .thumb-overlay{
+    opacity:1; background:rgba(15,16,14,.42);
+  }
+  .thumb-overlay span{
+    font-family:var(--mono); font-size:0.76rem; letter-spacing:.03em; color:#fff;
+    border:1px solid rgba(255,255,255,.55); border-radius:999px; padding:10px 20px;
+    background:rgba(255,255,255,.08); display:inline-flex; align-items:center; gap:6px;
+    transform:translateY(10px); opacity:0;
+    transition:transform .35s ease .05s, opacity .35s ease .05s;
+  }
+  .project-card:hover .thumb-overlay span, .project-card:focus-visible .thumb-overlay span{
+    transform:translateY(0); opacity:1;
+  }
+  .thumb-placeholder{
+    display:none; position:absolute; inset:0; align-items:center; justify-content:center;
+    text-align:center; font-family:var(--mono); font-size:0.65rem; color:var(--ink-soft); padding:10px; line-height:1.4;
+  }
+  .project-body{ padding:22px 22px 24px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .project-meta{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; font-family:var(--mono); font-size:0.68rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; }
+  .project-badge{ background:var(--accent); color:var(--bg); padding:3px 9px; border-radius:999px; }
+  .project-type{
+    position:absolute; top:12px; left:12px; z-index:3;
+    display:flex; gap:6px; flex-wrap:wrap;
+  }
+  .project-type span{
+    font-family:var(--mono); font-size:0.64rem; letter-spacing:.05em; text-transform:uppercase;
+    background:rgba(23,24,26,.75); color:#fff; backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
+    border:1px solid rgba(255,255,255,.28);
+    border-radius:999px; padding:4px 11px;
+  }
+  .project-title{ font-family:var(--serif); font-size:1.25rem; font-weight:500; margin-top:2px; }
+  .project-date{ font-family:var(--mono); font-size:0.72rem; color:var(--ink-soft); }
+  .project-desc{ font-size:0.88rem; color:var(--ink-soft); flex:1; }
+  .project-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .project-tags span{ font-family:var(--mono); font-size:0.68rem; border:1px solid var(--line); border-radius:999px; padding:4px 10px; color:var(--ink-soft); }
+  .project-tags span.more{ background:var(--line); }
+  .project-link{
+    margin-top:14px; font-family:var(--mono); font-size:0.78rem; font-weight:500;
+    color:var(--ink); display:inline-flex; align-items:center; gap:6px;
+  }
+  .project-link::after{ content:'→'; transition:transform .2s ease; }
+  .project-card:hover .project-link::after, .project-card:focus-visible .project-link::after{ transform:translateX(4px); }
+
+  @media (max-width:800px){ .projects-grid{ grid-template-columns:1fr; } }
+
+  /* ================================================================
+     CONTACT — Let's Connect + form fungsional (mailto)
+     ================================================================ */
+  .contact{ background:var(--ink); color:var(--bg); border-top:1px solid var(--line); }
+  .contact .section-head{ }
+  .contact .eyebrow{ color:var(--accent-2); }
+  .contact .section-title{ color:var(--bg); }
+  .contact .section-sub{ color:color-mix(in srgb, var(--bg) 65%, transparent); }
+
+  .contact-form{ max-width:560px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+  .field{ display:flex; flex-direction:column; gap:8px; text-align:left; }
+  .field label{ font-family:var(--mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:.1em; color:color-mix(in srgb, var(--bg) 70%, transparent); }
+  .field input, .field textarea{
+    background:color-mix(in srgb, var(--bg) 8%, transparent);
+    border:1px solid color-mix(in srgb, var(--bg) 22%, transparent);
+    border-radius:10px; padding:13px 15px; color:var(--bg);
+    font-family:var(--sans); font-size:0.95rem;
+  }
+  .field input::placeholder, .field textarea::placeholder{ color:color-mix(in srgb, var(--bg) 45%, transparent); }
+  .field input:focus, .field textarea:focus{ outline:none; border-color:var(--accent-2); background:color-mix(in srgb, var(--bg) 12%, transparent); }
+  .field textarea{ resize:vertical; min-height:120px; }
+
+  .contact-submit{
+    margin-top:6px; align-self:flex-start;
+    background:var(--bg); color:var(--ink); border:1px solid var(--bg);
+    font-family:var(--mono); font-size:0.85rem; padding:14px 26px; border-radius:999px;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .contact-submit:hover{ transform:translateY(-2px); }
+  .contact-submit:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+  .form-status{ font-family:var(--mono); font-size:0.78rem; min-height:18px; color:var(--accent-2); }
+
+  /* ================================================================
+     MODAL CASE STUDY — muncul saat kartu proyek diklik
+     ================================================================ */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.6);
+    display:none; align-items:center; justify-content:center;
+    padding:24px; z-index:200;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-content{
+    background:var(--bg); border:1px solid var(--line); border-radius:18px;
+    max-width:760px; width:100%; max-height:88vh; overflow-y:auto;
+    padding:clamp(24px,4vw,44px); position:relative;
+  }
+  .modal-close{
+    position:absolute; top:18px; right:18px; width:36px; height:36px;
+    border-radius:50%; border:1px solid var(--line); background:var(--bg-raised);
+    font-family:var(--mono); font-size:0.9rem; color:var(--ink);
+  }
+  .modal-title{ font-family:var(--serif); font-size:clamp(1.5rem,4vw,2rem); font-weight:500; margin-top:10px; }
+  .modal-desc{ margin-top:14px; color:var(--ink-soft); font-size:0.98rem; }
+  .modal-section-label{
+    display:block; font-family:var(--mono); font-size:0.72rem; text-transform:uppercase;
+    letter-spacing:0.1em; color:var(--ink-soft); margin-top:28px; margin-bottom:12px;
+  }
+  .modal-shots{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .modal-shot{
+    aspect-ratio:16/10; border-radius:10px; overflow:hidden; position:relative;
+    border:1px solid var(--line); background:var(--bg-raised);
+  }
+  .modal-shot img{ width:100%; height:100%; object-fit:cover; }
+  @media (max-width:600px){ .modal-shots{ grid-template-columns:1fr; } }
+
+  /* ================================================================
+     FOOTER
+     ================================================================ */
+  footer{ background:var(--ink); color:var(--bg); border-top:1px solid color-mix(in srgb, var(--bg) 12%, transparent); }
+  .footer-top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;
+    padding-top:44px; padding-bottom:32px;
+  }
+  .footer-brand{ font-family:var(--serif); font-size:1.2rem; font-weight:500; }
+  .footer-meta{ margin-top:10px; font-size:0.85rem; color:color-mix(in srgb, var(--bg) 62%, transparent); display:flex; flex-direction:column; gap:4px; }
+  .footer-social{ display:flex; gap:10px; flex-wrap:wrap; }
+  .footer-social a{
+    font-family:var(--mono); font-size:0.75rem; border:1px solid color-mix(in srgb, var(--bg) 25%, transparent);
+    border-radius:999px; padding:8px 15px; color:var(--bg); opacity:.85; transition:opacity .2s ease, border-color .2s ease;
+  }
+  .footer-social a:hover{ opacity:1; border-color:var(--bg); }
+  .footer-bottom{
+    border-top:1px solid color-mix(in srgb, var(--bg) 12%, transparent);
+    padding:18px 0 26px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    font-family:var(--mono); font-size:0.72rem; color:color-mix(in srgb, var(--bg) 55%, transparent);
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGASI
+     ============================================================ -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="nav-logo">
+      <span class="nav-logo-mark">
+        <img id="navLogoImg" src="logo-mark.png" alt="Logo" data-light="logo-mark.png" data-dark="logo-mark-dark.png"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span class="nav-logo-fallback" id="navMarkFallback"></span>
+      </span>
+      <span id="navName">Nama Anda</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#top">Home</a>
+      <a href="#proyek">Projects</a>
+      <a href="#kontak">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema terang/gelap">🌙</button>
+      <button class="nav-toggle" id="navToggle" aria-label="Buka menu">MENU</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<div class="wrap">
+  <section class="hero" id="top">
+    <div class="hero-photo">
+      <img id="heroPhoto" src="ppp.png" alt="Foto profil"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="photo-placeholder">Taruh <code>ppp.png</code> di folder ini</div>
+    </div>
+    <h1 class="hero-name" id="heroName">Hey, I'm <em>Tegar Hanafi</em> — UI/UX Engineer</h1>
+    <p class="hero-desc" id="heroDesc">I design with precision, driven by an obsession for aesthetic perfection.</p>
+    <div class="hero-cta">
+      <a href="#kontak" class="btn btn-solid">Contact Me</a>
+      <a href="#proyek" class="btn btn-line">View Projects</a>
+      <a href="CV Tegar Hanafi.pdf" class="btn btn-ghost" download>Download CV</a>
+    </div>
+    <div class="hero-social" id="heroSocial"></div>
+  </section>
+</div>
+
+<!-- ============================================================
+     BEHIND THE CODE
+     ============================================================ -->
+<div class="behind">
+  <div class="wrap">
+    <section>
+      <div class="section-head">
+        <span class="eyebrow">About me</span>
+        <h2 class="section-title" id="behindTitle">Behind Every Pixel</h2>
+        <p class="section-sub" id="behindSub">Blending intuitive UX with clean, aesthetic UI to create products people love to use.</p>
+      </div>
+      <div class="cards3">
+        <div class="card">
+          <h3>My Journey</h3>
+          <p id="cardJourney">Began with a passion for drawing and creating visual work by hand. What started as a hobby gradually evolved into a deeper interest in design, leading me into the digital space. Today, I focus on UI/UX design, where I blend artistic intuition with structured thinking to craft meaningful digital experiences.</p>
+        </div>
+        <div class="card">
+          <h3>Core Tools</h3>
+          <p>Tools and technologies I use to design, prototype, and deliver impactful digital experiences.</p>
+          <div class="tools-tags" id="cardTools"></div>
+        </div>
+        <div class="card">
+          <h3>What I Bring to the Table</h3>
+          <div class="bring-grid">
+            <div class="bring-text">
+              <span class="bring-quote">&ldquo;</span>
+              <p id="cardBawa"></p>
+            </div>
+            <ul class="bring-services" id="cardDeliver"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============================================================
+     PROJECTS
+     ============================================================ -->
+<div class="wrap" id="proyek">
+  <section>
+    <div class="section-head">
+      <span class="eyebrow"></span>
+      <h2 class="section-title">My Work</h2>
+      <p class="section-sub">A curated body of work spanning UI/UX design, motion graphics, video production, and refined brand identity.</p>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </section>
+</div>
+
+<!-- ============================================================
+     CONTACT
+     ============================================================ -->
+<div class="contact" id="kontak">
+  <div class="wrap">
+    <section>
+      <div class="section-head">
+        <span class="eyebrow"></span>
+        <h2 class="section-title">Let's Connect</h2>
+        <p class="section-sub">Have a project in mind or just want to chat? Drop me a message below!</p>
+      </div>
+      <form class="contact-form" id="contactForm">
+        <div class="field">
+          <label for="fName">Name</label>
+          <input type="text" id="fName" name="name" placeholder="Nama Anda" required>
+        </div>
+        <div class="field">
+          <label for="fEmail">Email</label>
+          <input type="email" id="fEmail" name="email" placeholder="email@anda.com" required>
+        </div>
+        <div class="field">
+          <label for="fMessage">Message</label>
+          <textarea id="fMessage" name="message" placeholder="Tulis pesan Anda..." required></textarea>
+        </div>
+        <button type="submit" class="contact-submit" id="submitBtn">Send Message</button>
+        <p class="form-status" id="formStatus"></p>
+      </form>
+    </section>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand" id="footerBrand"></div>
+        <div class="footer-meta">
+          <span id="footerLokasi">Based in Jakarta, Indonesia</span>
+          <span id="footerBuilt">Built with HTML, CSS &amp; JS</span>
+        </div>
+      </div>
+      <div class="footer-social" id="footerSocial"></div>
+    </div>
+    <div class="footer-bottom">
+      <span id="footerCopy">© 2026 Nama Anda. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose" aria-label="Tutup">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================================
+   DATA PRIBADI ANDA — EDIT BAGIAN DI BAWAH INI SAJA
+   ================================================================================ */
+const dataSaya = {
+  nama: "Tegar Hanafi",
+  inisial: "TH",                 // muncul di kotak logo navigasi
+  peran: "UI/UX Engineer",           // contoh: "Software Developer"
+  deskripsiHero: "I design with precision, driven by an obsession for aesthetic perfection.",
+  fotoProfil: "ppp.png",
+  cv: "CV Tegar Hanafi.pdf",             // taruh file CV (PDF) di folder yang sama, lalu tulis nama filenya di sini
+  logo: "logo-mark.png",          // taruh file logo (khusus ikon/mark, bukan wordmark lengkap) di folder yang sama. Kalau file belum ada, otomatis muncul inisial sebagai gantinya.
+
+  behindTitle: "Behind Every Pixel",
+  behindSub: "Blending intuitive UX with clean, aesthetic UI to create products people love to use.",
+  perjalanan: "Began with a passion for drawing and creating visual work by hand. What started as a hobby gradually evolved into a deeper interest in design, leading me into the digital space. Today, I focus on UI/UX design, where I blend artistic intuition with structured thinking to craft meaningful digital experiences.",
+  coreTools: ["Figma", "After Effects", "React", "Photoshop", "Illustrator", "Next.js"],
+  bawaKeMeja: "I blend artistic intuition with structured thinking to craft digital experiences and visual identities that are not only aesthetically refined, but also purposeful.",
+  layanan: [
+    "UI/UX Design",
+    "Visual Identity & Logo Design",
+    "Motion Design & Microinteractions",
+    "Mock up branding"
+  ],
+
+  // Tambah / hapus objek untuk menambah atau mengurangi proyek.
+  // "kategori" dipakai untuk tombol filter (mis. "Office", "Freelance", dst) — JANGAN diisi Website/Logo/Video di sini.
+  // "tipe" adalah label penanda jenis proyek (Website / Logo / Video / dst), ditampilkan sebagai badge kecil
+  // di pojok kiri atas thumbnail. Boleh isi lebih dari 1, mis. tipe: ["Website", "Logo"].
+  proyek: [
+    {
+      judul: "Zambava Adventure",
+      kategori: "Freelance",
+      tipe: ["Website"],
+      perusahaan: "Alfhayan / Sumbawa Trip Planner",
+      tanggal: "2026",
+      deskripsi: "Coming soon........",
+      tag: ["Fullstack", "Next.js", "React", "MySQL"],
+      gambar: "coming soon.png",
+      tautan: "",
+      penjelasan: "This project is still in progress...............",
+      fitur: ["-"],
+      screenshot: []
+    },
+    {
+      judul: "Lensa Fakta",
+      kategori: "Freelance",              // ganti sesuai proyeknya: "Office" atau "Freelance"
+      tipe: ["Logo"],
+      perusahaan: "Aulia / UIN Sunan Gunung Djati Bandung",
+      tanggal: "2026",
+      deskripsi: "Lensa Fakta embodies a philosophy of seeing the truth without limits. By combining elements of a camera lens and the human eye in the shape of an infinity symbol, this logo represents a broad, objective, and ever-evolving perspective on understanding reality.",
+      tag: ["Illustrator", "Branding"],
+      gambar: "A.png",       // thumbnail / cover video
+      tautan: "",                          // opsional: link Behance/Figma/dsb.
+      penjelasan: "Lensa Fakta is a visual identity that represents a broad and in-depth perspective on reality. ‘Lensa’ symbolizes vision, perspective, and a way of understanding things, while ‘Fakta’ represents tangible and trustworthy truth. This logo combines elements of a camera lens and an eye lens arranged to form the infinity symbol, representing a view that continues to evolve without limits. This concept reflects the philosophy that, in viewing facts, a broad, open perspective is needed—one that is not limited to a single viewpoint.",
+      fitur: ["There is a camera lens element that is combined in such a way that it contains an infinity element.", "There is an eyeglass lens element that contains an infinity element."],
+      screenshot: ["A.png", "B.png", "C.jpeg"]
+    },
+    {
+      judul: "Human Resource Information System",
+      kategori: "Office",
+      tipe: ["Website"],
+      perusahaan: "PT Saraswanti Anugerah Indonesia",
+      tanggal: "July 2025 - September 2025",
+      deskripsi: "A web-based HRIS designed to simplify employee management and streamline HR workflows.",
+      tag: ["Figma", "Use Case", "UX Research", "Design System"],
+      gambar: "Login.jpeg",
+      tautan: "https://www.figma.com/design/WG7i7H5pnR3VIgmFuw7lbC/Human-Resource-Information-System--Copy-?node-id=2059-7551&t=YFPCjGWFpCVmep9M-1",
+      penjelasan: "A Human Resource Information System (HRIS) is a web-based application designed to manage employee data and support human resources administration processes in a centralized and structured manner. This system is used to streamline the processing of employee information, manage request and approval workflows, and improve the operational efficiency of the HR team by digitizing manual processes. System development was carried out using the Design Thinking approach, starting from user research through the design of user flows, wireframes, and high-fidelity prototypes. The interface design was built using the design system in Figma to maintain consistency and was validated through usability testing (Think Aloud & System Usability Scale) to ensure the system’s ease of use and effectiveness.",
+      fitur: [
+        "Employee data management",
+        "Leave management system",
+        "Overtime management with an approval system",
+        "Payroll management for employee compensation",
+        "Document & letter management",
+        "Analytics dashboard for monitoring HR activities"
+      ],
+      screenshot: ["Login.jpeg", "hris.jpeg", "hris2.png", "hris3.png"]   // taruh hasil export screenshot dari Figma di folder ini, tambah/kurangi sesuai kebutuhan
+    },
+    {
+      judul: "Internship Website Development",
+      kategori: "Office",
+      tipe: ["Website"],
+      perusahaan: "LPP TVRI",
+      tanggal: "2024",
+      deskripsi: "A web platform designed to simplify internship registration by enabling applicants to apply online.",
+      tag: ["Figma", "User Research", "UX Design", "UI Design", "Design System"],
+      gambar: "tvri.png",       // thumbnail / cover video
+      tautan: "https://www.figma.com/design/fABHw2qpP4NuUFAZQc86FW/UI-UX-Intern-Web-TVRI?node-id=0-1&t=QzxA39rk64VZJsJ6-1",
+      penjelasan: "This web-based application was designed to facilitate the internship registration process, allowing applicants to apply online without the need to visit the main office. The system streamlines the submission of applicant data, making the process more efficient and accessible.",
+      fitur: ["Online internship registration form", "Applicant data submission", "Application status tracking system"],
+      screenshot: ["tvri1.jpg", "tvri2.jpg", "tvri3.jpg"]
+    },
+    {
+      judul: "The Technology Behind TVRI",
+      kategori: "Office",              // ganti sesuai proyeknya: "Office" atau "Freelance"
+      tipe: ["Video"],
+      perusahaan: "LPP TVRI",
+      tanggal: "2024",
+      deskripsi: "Behind every well-executed broadcast lies a system and technology that operate around the clock. This video invites you to get to know TVRI’s IT Division better—the team that ensures every process runs smoothly, securely, and seamlessly, all to deliver high-quality broadcasts to the entire community.",
+      tag: ["After Effects", "Capcut", "Photoshop"],
+      gambar: "ricky.jpg",       // thumbnail / cover video
+      tautan: "",                          // opsional: link YouTube/Drive/dsb.
+      penjelasan: "This video highlights the vital role of TVRI’s IT Division as the backbone of technology-driven operations and broadcasting. From system management and network infrastructure to the development of digital solutions, the IT Division ensures that all processes run smoothly, securely, and efficiently. Through innovation and collaboration, TVRI’s IT Division continues to drive digital transformation to deliver higher-quality broadcasts and an optimal experience for its audience.",
+      fitur: ["Introduce Video", "Assets and Resources"],
+      screenshot: ["ricky.jpg", "d.jpg", "e.jpg"]
+    },
+    {
+      judul: "TVRI IT Division Branding",
+      kategori: "Office",
+      tipe: ["Logo"],
+      perusahaan: "LPP TVRI",
+      tanggal: "2024",
+      deskripsi: "A refreshed visual identity for TVRI, designed to reflect the organization’s commitment to innovation, quality, and public service.",
+      tag: ["Illustrator", "Photoshop", "Visual Identity"],
+      gambar: "IT.png",       // thumbnail / cover video
+      tautan: "",
+      penjelasan: "The new branding for TVRI was developed to modernize the organization’s visual identity while maintaining its core values and mission. The design incorporates contemporary elements that resonate with a diverse audience, emphasizing clarity, accessibility, and a forward-looking perspective.",
+      fitur: ["Logo redesign", "Color palette development", "Typography selection", "Brand guidelines creation"],
+      screenshot: ["IT1.png", "IT2.png", "IT3.png", "IT4.png"]
+    }
+  ],
+
+  // Untuk form kontak: pesan akan disiapkan lewat aplikasi email Anda (mailto),
+  // karena halaman ini murni HTML/CSS/JS tanpa server backend.
+  email: "hanafitegar1923@gmail.com",
+
+  // sosial: dipakai di bagian Hero. Footer punya susunan sendiri (lihat di bawah).
+  sosial: [
+    { label: "GitHub", url: "https://github.com/TegarHan" },
+    { label: "LinkedIn", url: "https://linkedin.com/in/tegarhanafi" }
+  ],
+
+  lokasi: "Jakarta, Indonesia",
+  dibuatDengan: "Built with HTML, CSS & JS"
+};
+/* ================================================================================
+   JANGAN UBAH KODE DI BAWAH INI KECUALI ANDA TAHU APA YANG DILAKUKAN
+   ================================================================================ */
+
+// --- Nav & identitas ---
+document.getElementById('navLogoImg').src = dataSaya.logo;
+document.getElementById('navMarkFallback').textContent = dataSaya.inisial;
+document.getElementById('navName').textContent = dataSaya.nama;
+document.getElementById('footerBrand').textContent = dataSaya.inisial + ' · ' + dataSaya.nama;
+document.getElementById('footerLokasi').textContent = 'Based in ' + dataSaya.lokasi;
+document.getElementById('footerBuilt').textContent = dataSaya.dibuatDengan;
+document.getElementById('footerCopy').textContent = `© ${new Date().getFullYear()} ${dataSaya.nama}. All rights reserved.`;
+
+// --- Hero ---
+document.getElementById('heroPhoto').src = dataSaya.fotoProfil;
+document.getElementById('heroName').innerHTML = `Hey, I'm <em>${dataSaya.nama}</em> — ${dataSaya.peran}`;
+document.getElementById('heroDesc').textContent = dataSaya.deskripsiHero;
+document.querySelector('.btn-ghost').setAttribute('href', dataSaya.cv);
+document.getElementById('heroSocial').innerHTML = dataSaya.sosial
+  .map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join('');
+
+// --- Behind the Code ---
+document.getElementById('behindTitle').textContent = dataSaya.behindTitle;
+document.getElementById('behindSub').textContent = dataSaya.behindSub;
+document.getElementById('cardJourney').textContent = dataSaya.perjalanan;
+document.getElementById('cardTools').innerHTML = dataSaya.coreTools.map(t => `<span>${t}</span>`).join('');
+document.getElementById('cardBawa').textContent = dataSaya.bawaKeMeja;
+document.getElementById('cardDeliver').innerHTML = dataSaya.layanan.map(l => `<li>${l}</li>`).join('');
+
+// --- Projects: filter tabs ---
+const kategoriUnik = ['Semua', ...new Set(dataSaya.proyek.map(p => p.kategori))];
+const filtersEl = document.getElementById('filters');
+filtersEl.innerHTML = kategoriUnik
+  .map((k, i) => `<button class="filter-btn ${i===0 ? 'active' : ''}" data-filter="${k}">${k === 'Semua' ? 'All Projects' : k}</button>`)
+  .join('');
+
+const gridEl = document.getElementById('projectsGrid');
+function renderProjects(filter){
+  const list = filter === 'Semua' ? dataSaya.proyek : dataSaya.proyek.filter(p => p.kategori === filter);
+  gridEl.innerHTML = list.map(p => {
+    const shown = p.tag.slice(0,3);
+    const sisa = p.tag.length - shown.length;
+    return `
+      <article class="project-card" data-index="${dataSaya.proyek.indexOf(p)}" tabindex="0" role="button" aria-label="Lihat studi kasus ${p.judul}">
+        <div class="project-thumb">
+          ${p.tipe && p.tipe.length ? `<div class="project-type">${p.tipe.map(t => `<span>${t}</span>`).join('')}</div>` : ''}
+          <img src="${p.gambar}" alt="${p.judul}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="thumb-placeholder">Taruh <code>${p.gambar}</code> di folder ini</div>
+          <div class="thumb-overlay"><span>Explore Case Study →</span></div>
+        </div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-badge">${p.kategori}</span>
+            <span>${p.perusahaan}</span>
+          </div>
+          <h3 class="project-title">${p.judul}</h3>
+          <span class="project-date">${p.tanggal}</span>
+          <p class="project-desc">${p.deskripsi}</p>
+          <div class="project-tags">
+            ${shown.map(t => `<span>${t}</span>`).join('')}
+            ${sisa > 0 ? `<span class="more">+${sisa}</span>` : ''}
+          </div>
+          <span class="project-link">Explore Case Study</span>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+renderProjects('Semua');
+
+filtersEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  filtersEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProjects(btn.dataset.filter);
+});
+
+// --- Modal Case Study proyek (dibuka lewat tombol "Explore Case Study") ---
+const modalOverlay = document.getElementById('modalOverlay');
+const modalBody = document.getElementById('modalBody');
+
+function openModal(p){
+  const shots = (p.screenshot || []).map(s => `
+    <div class="modal-shot">
+      <img src="${s}" alt="Screenshot ${p.judul}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="thumb-placeholder">Taruh <code>${s}</code> di folder ini</div>
+    </div>`).join('');
+
+  modalBody.innerHTML = `
+    <div class="project-meta">
+      <span class="project-badge">${p.kategori}</span>
+      ${(p.tipe || []).map(t => `<span class="project-badge" style="background:var(--accent-2);">${t}</span>`).join('')}
+      <span>${p.perusahaan} · ${p.tanggal}</span>
+    </div>
+    <h2 class="modal-title">${p.judul}</h2>
+    <p class="modal-desc">${p.penjelasan || p.deskripsi}</p>
+    <span class="modal-section-label">Key Features</span>
+    <ul class="deliver-list">${(p.fitur || []).map(f => `<li>${f}</li>`).join('')}</ul>
+    <span class="modal-section-label">Screenshots</span>
+    <div class="modal-shots">${shots || '<p class="project-desc">No screenshots have been added yet.</p>'}</div>
+    ${p.tautan ? `<a href="${p.tautan}" target="_blank" rel="noopener" class="btn btn-line" style="margin-top:28px;">${p.tautan.includes('figma.com') ? 'View Full Prototype on Figma' : 'Lihat Live Project'}</a>` : ''}
+  `;
+  modalOverlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  modalOverlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+gridEl.addEventListener('click', (e) => {
+  const card = e.target.closest('.project-card');
+  if(!card) return;
+  openModal(dataSaya.proyek[card.dataset.index]);
+});
+gridEl.addEventListener('keydown', (e) => {
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const card = e.target.closest('.project-card');
+  if(!card) return;
+  e.preventDefault();
+  openModal(dataSaya.proyek[card.dataset.index]);
+});
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+// --- Footer sosial: GitHub diganti Email (mailto), LinkedIn tetap ---
+const sosialFooter = [
+  { label: "Email", url: `mailto:${dataSaya.email}?subject=${encodeURIComponent('Halo dari portofolio Anda')}` },
+  ...dataSaya.sosial.filter(s => s.label !== "GitHub")
+];
+document.getElementById('footerSocial').innerHTML = sosialFooter
+  .map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join('');
+
+// --- Contact form (mailto — situs ini statis tanpa server) ---
+const form = document.getElementById('contactForm');
+const statusEl = document.getElementById('formStatus');
+const submitBtn = document.getElementById('submitBtn');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = document.getElementById('fName').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
+  const message = document.getElementById('fMessage').value.trim();
+  if(!name || !email || !message){
+    statusEl.textContent = 'Mohon lengkapi semua kolom.';
+    return;
+  }
+  const subject = encodeURIComponent(`Pesan dari ${name} lewat portofolio`);
+  const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+  window.location.href = `mailto:${dataSaya.email}?subject=${subject}&body=${body}`;
+  statusEl.textContent = 'Aplikasi email Anda akan terbuka untuk mengirim pesan ini.';
+  submitBtn.disabled = true;
+  setTimeout(() => { submitBtn.disabled = false; }, 2000);
+});
+
+// --- Dark mode ---
+const themeToggle = document.getElementById('themeToggle');
+const htmlEl = document.documentElement;
+
+function applyTheme(theme){
+  htmlEl.setAttribute('data-theme', theme);
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  const navLogoImg = document.getElementById('navLogoImg');
+  navLogoImg.src = theme === 'dark' ? navLogoImg.dataset.dark : navLogoImg.dataset.light;
+}
+// Default: ikuti preferensi sistem perangkat saat halaman pertama dibuka
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(prefersDark ? 'dark' : 'light');
+
+themeToggle.addEventListener('click', () => {
+  const current = htmlEl.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// --- Navigasi mobile ---
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+</script>
+</body>
+</html>
